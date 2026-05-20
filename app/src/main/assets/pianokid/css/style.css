@@ -1,0 +1,458 @@
+/* =============================================
+   钢琴小达人 - 全局样式 (Landscape)
+   ============================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+:root {
+  --bg: #1A1A2E;
+  --bg2: #16213E;
+  --accent: #5B4FCF;
+  --accent2: #7B6CF6;
+  --orange: #FF6B35;
+  --green: #2ECC71;
+  --red: #E74C3C;
+  --yellow: #F39C12;
+  --text: #FFFFFF;
+  --text-dim: #AAAACC;
+  --white-key: #FFFFFF;
+  --black-key: #2C2C3E;
+  --staff-line: #446688;
+  --staff-note: #FFD700;
+  --highlight: #FF8C00;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 16px;
+}
+
+/* ---- Screen Router ---- */
+.screen {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  flex-direction: column;
+}
+.screen.active {
+  display: flex;
+}
+
+/* ---- 首页 ---- */
+#screen-home {
+  background: linear-gradient(180deg, #1A1A2E 0%, #16213E 100%);
+  align-items: center;
+  justify-content: flex-start;
+  padding: 16px 24px 8px;
+  gap: 12px;
+}
+
+.home-header {
+  text-align: center;
+  width: 100%;
+}
+.home-header h1 {
+  font-size: 28px;
+  color: var(--accent2);
+  margin-bottom: 6px;
+}
+.home-user-info {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.level-list {
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.level-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--bg2);
+  border-radius: 10px;
+  border: 1px solid #2A2A4A;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.level-item:active { background: #1E2A4A; }
+.level-item.locked { opacity: 0.5; cursor: not-allowed; }
+
+.level-stars {
+  font-size: 14px;
+  color: #FFD700;
+  min-width: 50px;
+}
+.level-name {
+  flex: 1;
+  font-size: 16px;
+}
+.level-difficulty {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.level-best {
+  font-size: 12px;
+  color: var(--text-dim);
+  min-width: 80px;
+  text-align: right;
+}
+
+.home-bottom-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 6px 0 4px;
+}
+.btn-nav {
+  padding: 8px 20px;
+  background: var(--bg2);
+  border: 1px solid #3A3A5A;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-nav:active { background: var(--accent); }
+
+.version-watermark {
+  font-size: 11px;
+  color: #555577;
+  text-align: center;
+  padding: 2px 0;
+}
+
+/* ---- 顶部导航栏 ---- */
+.top-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid #2A2A4A;
+  gap: 12px;
+  min-height: 48px;
+}
+.top-bar h3 {
+  flex: 1;
+  font-size: 18px;
+}
+.btn-back {
+  font-size: 28px;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0 8px;
+}
+.btn-small {
+  padding: 4px 12px;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ---- 游戏页面 ---- */
+#screen-game {
+  background: var(--bg);
+}
+
+.game-nav {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid #2A2A4A;
+  gap: 12px;
+  font-size: 16px;
+}
+
+.game-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.staff-area {
+  flex: 0 0 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0D1525;
+  padding: 8px;
+}
+#staff-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.piano-area {
+  flex: 0 0 35%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: #111122;
+  padding: 0 8px 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.game-status-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 16px;
+  background: var(--bg2);
+  border-top: 1px solid #2A2A4A;
+  font-size: 14px;
+  min-height: 44px;
+}
+
+/* ---- 判定动画 ---- */
+.judgment-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  font-weight: bold;
+  pointer-events: none;
+  opacity: 0;
+}
+.judgment-overlay.show {
+  animation: judgmentPop 0.5s ease-out forwards;
+}
+@keyframes judgmentPop {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+  30%  { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+  100% { opacity: 0; transform: translate(-50%, -70%) scale(1.0); }
+}
+.judgment-perfect { color: var(--green); text-shadow: 0 0 20px var(--green); }
+.judgment-good    { color: var(--yellow); text-shadow: 0 0 20px var(--yellow); }
+.judgment-miss    { color: var(--red);   text-shadow: 0 0 20px var(--red); }
+
+/* ---- 钢琴键盘 ---- */
+#piano-keys {
+  display: flex;
+  position: relative;
+  height: 100%;
+}
+.key {
+  position: relative;
+  border-radius: 0 0 4px 4px;
+  cursor: default;
+  transition: background 0.1s;
+}
+.key.white {
+  width: 36px;
+  height: 100%;
+  background: var(--white-key);
+  border: 1px solid #CCC;
+  z-index: 1;
+}
+.key.black {
+  width: 24px;
+  height: 60%;
+  background: var(--black-key);
+  z-index: 2;
+  position: absolute;
+}
+.key-label {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: #888;
+  pointer-events: none;
+}
+.key.white .key-label { color: #888; }
+.key.black .key-label { color: #666; }
+
+/* Key states */
+.key.hint {
+  background: var(--highlight) !important;
+  box-shadow: 0 0 8px var(--highlight);
+}
+.key.correct {
+  background: var(--green) !important;
+  box-shadow: 0 0 12px var(--green);
+}
+.key.wrong {
+  background: var(--red) !important;
+  box-shadow: 0 0 12px var(--red);
+}
+
+/* ---- 结算页面 ---- */
+#screen-result {
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.85);
+}
+.result-box {
+  background: var(--bg2);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+.result-box h2 { font-size: 24px; margin-bottom: 16px; }
+.result-stars { font-size: 40px; margin-bottom: 12px; }
+.result-score { font-size: 20px; color: var(--accent2); margin-bottom: 16px; }
+.result-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+.result-reward {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #FFD700;
+}
+.result-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ---- 商店 ---- */
+.shop-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.shop-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: var(--bg2);
+  border-radius: 12px;
+  border: 1px solid #2A2A4A;
+  cursor: pointer;
+  gap: 16px;
+}
+.shop-item:active { background: #1E2A4A; }
+.shop-item-icon { font-size: 32px; }
+.shop-item-info { flex: 1; }
+.shop-item-info h4 { font-size: 16px; margin-bottom: 4px; }
+.shop-item-info p { font-size: 12px; color: var(--text-dim); }
+.shop-item-price { font-size: 16px; color: #FFD700; }
+
+/* ---- 记录页面 ---- */
+.records-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.record-item {
+  padding: 12px 16px;
+  background: var(--bg2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+/* ---- 日志页面 ---- */
+.log-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 11px;
+  line-height: 1.8;
+  color: #88CCFF;
+  background: #0A0A14;
+}
+.log-entry { padding: 1px 0; }
+.log-entry.info  { color: #88CCFF; }
+.log-entry.warn  { color: #FFCC44; }
+.log-entry.error { color: #FF6666; }
+
+/* ---- 通用按钮 ---- */
+.modal-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.modal-btn:active { background: var(--accent2); }
+.modal-btn.secondary {
+  background: #2A2A4A;
+}
+.modal-btn.secondary:active { background: #3A3A5A; }
+
+.modal-btns { display: flex; flex-direction: column; gap: 8px; }
+
+/* ---- 弹窗 ---- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.modal {
+  background: var(--bg2);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 360px;
+  width: 90%;
+  text-align: center;
+}
+.modal h2 { font-size: 20px; margin-bottom: 12px; }
+.modal p { font-size: 14px; color: var(--text-dim); margin-bottom: 16px; }
+#freetime-timer {
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--accent2);
+  margin: 16px 0;
+}
