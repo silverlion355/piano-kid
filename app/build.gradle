@@ -1,0 +1,36 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.pianokid.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.pianokid.app"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("${projectDir}/kidgame.p12")
+            storePassword "kidgame123"
+            keyAlias "pianokid"
+            keyPassword "kidgame123"
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+}
