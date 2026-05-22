@@ -14,19 +14,9 @@ android {
         versionName "1.0.0"
     }
 
-    signingConfigs {
-        debug {
-            storeFile file("${projectDir}/kidgame.p12")
-            storePassword "kidgame123"
-            keyAlias "pianokid"
-            keyPassword "kidgame123"
-        }
-    }
-
     buildTypes {
         debug {
             minifyEnabled false
-            signingConfig signingConfigs.debug
         }
     }
 }
