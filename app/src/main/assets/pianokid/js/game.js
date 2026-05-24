@@ -27,6 +27,8 @@ var Game = (function() {
     currentSong = SONGS[songId - 1];
     if (!currentSong) { GameLog.error('Game', 'Song not found: ' + songId); return; }
 
+    Game.currentSong = currentSong;
+
     currentIndex = 0;
     isPlaying = true;
     score = 0;

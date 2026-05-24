@@ -3,18 +3,22 @@
  * 页面路由、初始化、UI更新
  */
 var App = (function() {
-  var currentScreen = 'home-screen';
+  var currentScreen = 'screen-home';
 
-  // ---- Screen Navigation ----
+  function safeText(id, value) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = value;
+  }
+
   function showScreen(name) {
-    // Stop game when leaving game screen
-    if (currentScreen === 'game-screen' && name !== 'game-screen') {
+    if (currentScreen === 'screen-game' && name !== 'screen-game') {
       Game.stopGame();
     }
 
     document.querySelectorAll('.screen').forEach(function(s) {
       s.classList.remove('active');
     });
+
     var target = document.getElementById('screen-' + name);
     if (target) target.classList.add('active');
     currentScreen = 'screen-' + name;
@@ -27,31 +31,29 @@ var App = (function() {
     GameLog.info('App', 'Screen: ' + name);
   }
 
-  // ---- Home Info ----
   function updateHomeInfo() {
     var p = Storage.getProgress();
-    document.getElementById('home-coins').textContent = p.coins;
-    document.getElementById('home-stars').textContent = p.totalStars;
+    safeText('home-coins', p.coins);
+    safeText('home-stars', p.totalStars);
 
     var titles = ['', '钢琴小白', '钢琴学徒', '钢琴达人', '钢琴高手', '钢琴大师'];
-    document.getElementById('home-username').textContent = titles[p.level] || '钢琴小白';
-    document.getElementById('home-level').textContent = 'Lv.' + p.level;
+    safeText('home-username', titles[p.level] || '钢琴小白');
+    safeText('home-level', 'Lv.' + p.level);
 
     renderLevelList();
   }
 
   function renderLevelList() {
     var container = document.getElementById('level-list');
+    if (!container) return;
+
     var p = Storage.getProgress();
     container.innerHTML = '';
 
     SONGS.forEach(function(song) {
       var isUnlocked = p.unlockedSongs.indexOf(song.id) >= 0;
       var record = p.records[song.id] || { stars: 0, bestScore: 0 };
-      var starsStr = '☆☆☆'.replace(/★/g, '☆');
-      if (record.stars > 0) {
-        starsStr = '⭐'.repeat(record.stars) + '☆'.repeat(3 - record.stars);
-      }
+      var starsStr = record.stars > 0 ? '⭐'.repeat(record.stars) + '☆'.repeat(3 - record.stars) : '☆☆☆';
 
       var div = document.createElement('div');
       div.className = 'level-item' + (isUnlocked ? '' : ' locked');
@@ -67,10 +69,8 @@ var App = (function() {
     });
   }
 
-  // ---- Shop ----
   function updateShopInfo() {
-    var p = Storage.getProgress();
-    document.getElementById('shop-my-coins').textContent = p.coins;
+    safeText('shop-my-coins', Storage.getProgress().coins);
   }
 
   function buyItem(itemId) {
@@ -86,12 +86,10 @@ var App = (function() {
     Storage.saveProgress(p);
 
     if (itemId === 'freetime1' || itemId === 'freetime5') {
-      var minutes = itemId === 'freetime1' ? 1 : 5;
-      showFreetime(minutes);
+      showFreetime(itemId === 'freetime1' ? 1 : 5);
     } else if (itemId === 'unlock') {
-      var unlocked = p.unlockedSongs;
       for (var i = 1; i <= 6; i++) {
-        if (unlocked.indexOf(i) < 0) { unlocked.push(i); break; }
+        if (p.unlockedSongs.indexOf(i) < 0) { p.unlockedSongs.push(i); break; }
       }
       Storage.saveProgress(p);
       alert('已解锁下一关卡！');
@@ -106,6 +104,8 @@ var App = (function() {
     var remaining = minutes * 60;
     var modal = document.getElementById('modal-freetime');
     var timerEl = document.getElementById('freetime-timer');
+    if (!modal || !timerEl) return;
+
     modal.style.display = 'flex';
 
     function tick() {
@@ -122,22 +122,18 @@ var App = (function() {
     tick();
   }
 
-  function closeFreetime() {
-    document.getElementById('modal-freetime').style.display = 'none';
-  }
+  function closeFreetime() { document.getElementById('modal-freetime').style.display = 'none'; }
 
-  // ---- Records ----
   function updateRecordsInfo() {
     var container = document.getElementById('records-list');
+    if (!container) return;
+
     var p = Storage.getProgress();
     container.innerHTML = '';
 
     SONGS.forEach(function(song) {
       var record = p.records[song.id] || { stars: 0, bestScore: 0, playCount: 0 };
-      var starsStr = record.stars > 0
-        ? '⭐'.repeat(record.stars) + '☆'.repeat(3 - record.stars)
-        : '☆☆☆';
-
+      var starsStr = record.stars > 0 ? '⭐'.repeat(record.stars) + '☆'.repeat(3 - record.stars) : '☆☆☆';
       var div = document.createElement('div');
       div.className = 'record-item';
       div.innerHTML =
@@ -149,15 +145,13 @@ var App = (function() {
     });
   }
 
-  // ---- Log ----
   function updateLogInfo() {
     var container = document.getElementById('log-content');
+    if (!container) return;
+
     container.innerHTML = '';
     GameLog.onEntry(function(entry) {
-      if (entry.cleared) {
-        container.innerHTML = '';
-        return;
-      }
+      if (entry.cleared) { container.innerHTML = ''; return; }
       var ts = entry.time.toISOString().substr(11, 12);
       var div = document.createElement('div');
       div.className = 'log-entry ' + entry.level;
@@ -165,105 +159,46 @@ var App = (function() {
       container.appendChild(div);
       container.scrollTop = container.scrollHeight;
     });
-
-    // Render existing logs
-    var logs = GameLog.getAll();
-    for (var i = 0; i < logs.length; i++) {
-      var e = logs[i];
+    GameLog.getAll().forEach(function(e) {
       var ts = e.time.toISOString().substr(11, 12);
       var div = document.createElement('div');
       div.className = 'log-entry ' + e.level;
       div.textContent = '[' + ts + '][' + e.level.toUpperCase() + '][' + e.tag + '] ' + e.msg;
       container.appendChild(div);
-    }
+    });
     container.scrollTop = container.scrollHeight;
   }
 
-  // ---- Game Controls ----
-  function startSong(songId) {
-    GameLog.info('App', 'Starting song: ' + songId);
-    Game.startGame(songId);
-  }
+  function startSong(songId) { GameLog.info('App', 'Starting song: ' + songId); Game.startGame(songId); }
+  function replayGame() { if (window.Game && Game.currentSong) Game.startGame(Game.currentSong.id); }
+  function nextSong() { if (window.Game && Game.currentSong && Game.currentSong.id < 6) Game.startGame(Game.currentSong.id + 1); }
+  function goHome() { Game.stopGame(); showScreen('home-screen'); }
+  function confirmQuit() { document.getElementById('modal-quit').style.display = 'flex'; }
+  function hideQuitModal() { document.getElementById('modal-quit').style.display = 'none'; }
+  function quitGame() { document.getElementById('modal-quit').style.display = 'none'; Game.stopGame(); showScreen('home-screen'); }
 
-  function replayGame() {
-    var songId = (SONGS[0] && currentScreen === 'result-screen') ? 1 : 1;
-    // Find last played song from localStorage context - just replay current
-    // Game.js stores currentSong
-    if (window.Game && Game.currentSong) {
-      Game.startGame(Game.currentSong.id);
-    }
-  }
-
-  function nextSong() {
-    if (window.Game && Game.currentSong && Game.currentSong.id < 6) {
-      Game.startGame(Game.currentSong.id + 1);
-    }
-  }
-
-  function goHome() {
-    Game.stopGame();
-    showScreen('home-screen');
-  }
-
-  function confirmQuit() {
-    document.getElementById('modal-quit').style.display = 'flex';
-  }
-
-  function hideQuitModal() {
-    document.getElementById('modal-quit').style.display = 'none';
-  }
-
-  function quitGame() {
-    document.getElementById('modal-quit').style.display = 'none';
-    Game.stopGame();
-    showScreen('home-screen');
-  }
-
-  // ---- Back Pressed (from Android) ----
   window._onBackPressed = function() {
-    if (currentScreen === 'home-screen') {
-      // Allow exit
-      return;
-    }
-    if (currentScreen === 'game-screen') {
-      confirmQuit();
-    } else {
-      showScreen('home-screen');
-    }
+    if (currentScreen === 'screen-home') return;
+    if (currentScreen === 'screen-game') confirmQuit();
+    else showScreen('home-screen');
   };
 
-  // ---- Init ----
   function init() {
-    GameLog.info('App', 'PianoKid initializing...');
-
-    // Version
-    var versionName = '1.0.0';
     try {
-      versionName = AndroidStorage ? '1.0.0' : '1.0.0';
-    } catch(e) {}
-    document.getElementById('version-text').textContent = '版本 ' + versionName;
-    GameLog.info('App', 'Version: ' + versionName);
-
-    // Init components
-    Staff.init();
-    Piano.init();
-
-    // Show home
-    showScreen('home-screen');
-    updateHomeInfo();
-
-    GameLog.info('App', 'PianoKid ready!');
+      GameLog.info('App', 'PianoKid initializing...');
+      safeText('version-text', '版本 1.0.0');
+      Staff.init();
+      Piano.init();
+      showScreen('home-screen');
+      updateHomeInfo();
+      GameLog.info('App', 'PianoKid ready!');
+    } catch (e) {
+      console.error(e);
+      GameLog.error('App', 'Init failed: ' + e);
+    }
   }
 
-  // Start
-  document.addEventListener('DOMContentLoaded', function() {
-    try { init(); } catch(e) { console.error('init error:', e); }
-  });
+  document.addEventListener('DOMContentLoaded', function() { try { init(); } catch(e) { console.error('init error:', e); } });
 
-  return {
-    showScreen: showScreen, updateHomeInfo: updateHomeInfo,
-    startSong: startSong, replayGame: replayGame, nextSong: nextSong,
-    goHome: goHome, confirmQuit: confirmQuit, hideQuitModal: hideQuitModal, quitGame: quitGame,
-    buyItem: buyItem, closeFreetime: closeFreetime
-  };
+  return { showScreen: showScreen, updateHomeInfo: updateHomeInfo, startSong: startSong, replayGame: replayGame, nextSong: nextSong, goHome: goHome, confirmQuit: confirmQuit, hideQuitModal: hideQuitModal, quitGame: quitGame, buyItem: buyItem, closeFreetime: closeFreetime };
 })();
