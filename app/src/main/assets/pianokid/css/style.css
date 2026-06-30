@@ -54,7 +54,7 @@ html, body {
 }
 
 /* ---- 首页 ---- */
-#screen-home {
+#screen-home-screen {
   background: linear-gradient(180deg, #1A1A2E 0%, #16213E 100%);
   align-items: center;
   justify-content: flex-start;
@@ -180,7 +180,7 @@ html, body {
 }
 
 /* ---- 游戏页面 ---- */
-#screen-game {
+#screen-game-screen {
   background: var(--bg);
 }
 
@@ -313,7 +313,7 @@ html, body {
 }
 
 /* ---- 结算页面 ---- */
-#screen-result {
+#screen-result-screen {
   align-items: center;
   justify-content: center;
   background: rgba(0,0,0,0.85);

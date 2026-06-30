@@ -3,7 +3,7 @@
  * 页面路由、初始化、UI更新
  */
 var App = (function() {
-  var currentScreen = 'screen-home';
+  var currentScreen = 'screen-home-screen';
 
   function safeText(id, value) {
     var el = document.getElementById(id);
@@ -11,7 +11,7 @@ var App = (function() {
   }
 
   function showScreen(name) {
-    if (currentScreen === 'screen-game' && name !== 'screen-game') {
+    if (currentScreen === 'screen-game-screen' && name !== 'game-screen') {
       Game.stopGame();
     }
 
@@ -178,8 +178,8 @@ var App = (function() {
   function quitGame() { document.getElementById('modal-quit').style.display = 'none'; Game.stopGame(); showScreen('home-screen'); }
 
   window._onBackPressed = function() {
-    if (currentScreen === 'screen-home') return;
-    if (currentScreen === 'screen-game') confirmQuit();
+    if (currentScreen === 'screen-home-screen') return;
+    if (currentScreen === 'screen-game-screen') confirmQuit();
     else showScreen('home-screen');
   };
 
